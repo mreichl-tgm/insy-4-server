@@ -1,4 +1,4 @@
-## Software Development
+## Information Systems
 Information Systems - Server ▪ Year 4 - Semester 7/8 - 2016/17 ▪ TGM Vienna - Information Technology :school_satchel: :school:
 
 ### Dear Visitor,
