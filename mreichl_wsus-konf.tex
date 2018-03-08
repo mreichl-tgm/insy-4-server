@@ -1,0 +1,137 @@
+\documentclass{preset/school}
+
+\subject{INSY}
+\title{Windows Server}
+\subtitle{WSUS Konfiguration}
+
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+% \begin{thebibliography}{9}
+% \end{thebibliography}
+
+\newpage
+\section{Vorbereitung}
+In der Standardkonfiguration ruft WSUS Updates von Microsoft Update ab. Wenn sich ein Proxyserver im Netzwerk befindet, kann WSUS zur Verwendung des Proxyservers konfiguriert werden.
+In diesem Fall sollte soller Zugriff auf diesen Server, sowie dessen Firewall gegeben sein.\\
+Updates können auch in Netzwerke importiert werden, die nicht mit dem Internet verbunden sind.
+
+\section{Konfigurieren von Netzwerkverbindungen}
+\paragraph{Updates}
+Zu Beginn muss angegeben werden wie der Server Updates abruft (von Microsoft Update oder von einem anderen WSUS-Server).
+\paragraph{Proxy}
+Wenn WSUS einen Proxyserver für den Internetzugriff verwenden muss, müssen die Proxyeinstellungen im WSUS-Server konfiguriert werden.
+\paragraph{Firewall}
+Wenn sich WSUS hinter einer Firewall befindet, müssen einige zusätzliche Schritte auf dem Edgegerät ausgeführt werden, um den WSUS-Datenverkehr korrekt zuzulassen.
+
+\subsection{Verbindung zum Internet}
+Der WSUS-Server verwendet standardmäßig den Port 443 für das HTTPS-Protokoll, um Updates von Microsoft Update herunterzuladen. Die meisten Firewalls lassen diese Art von Datenverkehr zu.
+
+\subsubsection{Mit Firewall}
+Da WSUS den gesamten Netzwerkdatenverkehr initiiert, muss die Windows-Firewall auf dem WSUS-Server nicht konfiguriert werden.
+Obwohl die Verbindung zwischen Microsoft Update und WSUS erfordert, dass die Ports 80 und 443 geöffnet sind, können mehrere WSUS-Server zur Synchronisierung mit einem benutzerdefinierten Port eingestellt werden.
+
+\subsubsection{Verbindung zwischen Clients und WSUS-Servern}
+Die Überwachungsschnittstellen und Ports werden auf den IIS-Websites für WSUS und in allen Gruppenrichtlinieneinstellungen zur Konfiguration von Clientcomputern konfiguriert.
+
+\paragraph{Konfigurieren der Proxyserver}
+Werden Proxyserver verwendet, müssen die Proxyserver die Protokolle HTTP und SSL unterstützen und Standardauthentifizierung oder Windows-Authentifizierung verwenden.
+Es ist auch möglich, dass mehrere Proxyserver nur einen Teilaspekt erfüllen.
+
+\subparagraph{Einrichten von WSUS zur Verwendung von Proxyservern}
+\begin{enumerate}
+    \item Anmeldung am Server als Administrator.
+    \item Installation der WSUS-Serverrolle. Hier wird noch kein Proxyserver angegeben.
+    \item Eingabeaufforderung (cmd.exe) als Administrator öffnen.
+    \item Wechseln im Eingabeaufforderungsfenster zum Ordner\\
+    \texttt{C:\textbackslash{}Programme\textbackslash{}Update Services\textbackslash{}Tools}.
+    \item \texttt{wsusutil ConfigureSSLProxy [<Proxyserver Proxyport>] –enable} eingeben
+    \item Öffnen der WSUS-Verwaltungskonsole.
+    \item Erweitern des Servernamen, und klicken auf Optionen.
+    \item Klicken auf Updatequelle und Proxyserver und anschließend auf die Registerkarte Proxyserver.
+    \item Ändern oder Hinzufügen eines Proxyservers zur WSUS-Konfiguration.
+    \item Aktivieren des Kontrollkästchens für ``Proxyserver für die Synchronisierung verwenden''.
+\end{enumerate}
+
+\section{Konfigurieren von WSUS}
+\begin{enumerate}
+    \item Klicken im Navigationsbereich des Server-Managers auf Dashboard, auf Tools und dann auf Windows Server Update Services.
+    \item Der Anleitung des Assistenten folgen und wenn nötig Einstellungen vornehmen.
+    \item Auf der Seite Upstreamserver auswählen stehen zwei Optionen zur Verfügung: ``Updates mit Microsoft Update synchronisieren'' und ``Von einem anderen Windows Server Update Services-Server synchronisieren''.\\
+    Bei letzterem müssen Servername und Port angegeben werden, über welche der Server mit dem Upstreamserver kommuniziert und nötige Änderungen an den Kontrollkästchen vorgenommen werden.
+    \item Nachdem die entsprechenden Optionen ausgewählt wurden mit Weiter fortfahren.
+    \item Mit Upstreamserver verbinden klicken und auf Verbindung starten.
+    \item Auf der Seite Produkte auswählen können Produkte gewählt werden, für welche Updates heruntergeladen werden sollen.
+    \item Auswahl von Produktkategorien oder bestimmten Produkten.
+    \item Auswahl von Produktoptionen für die Bereitstellung.
+    \item Auswahl von Update-Klassifizierungen.
+    \item Auf der Seite ``Synchronisierungszeitplan festlegen'' auswählen, ob die Synchronisierung manuell oder automatisch ausgeführt werden soll.
+    \item Bei Auswahl von Manuell synchronisieren muss die Synchronisierung über die WSUS-Verwaltungskonsole gestartet werden.
+    \item Bei Auswahl von Automatisch synchronisieren führt der WSUS-Server die Synchronisierung in festgelegten Intervallen aus.
+    \item Zeit für Erste Synchronisierung festlegen und Synchronisierungen pro Tag angeben, die dieser Server ausführen soll.
+\end{enumerate}
+
+Die Synchronisation kann nun direkt gestartet werden, indem Sie das Kontrollkästchen Erstsynchronisierung starten aktiviert wird.
+Ansonsten muss die Erstsynchronisierung über die WSUS-Verwaltungskonsole ausgeführt werden.
+\\\vspace{0.5 em}
+Damit ist die grundlegende WSUS-Konfiguration abgeschlossen.
+
+\section{Konfigurieren von Computergruppen}
+Mithilfe von Computergruppen können Updates getestet und gezielt für bestimmte Computer angewendet werden.
+\\\vspace{0.5 em}
+Standardmäßig fügt der WSUS-Server jeden Client bei der ersten Verbindungsherstellung einer der zwei Standardcomputergruppen, ``Alle Computer'' oder ``Nicht zugewiesene Computer'' hinzu.
+Es wird empfohlen, mindestens eine weitere Computergruppe zu erstellen, mit der Updates getestet werden können, bevor sie auf anderen Computern bereitgestellt werden.
+
+\subsection{Erstellen einer Computergruppe}
+\begin{enumerate}
+    \item Erweitern des Eintrags Computer unter Update Services in der Konsole und klick auf Alle Computer, sowie auf Computergruppe hinzufügen.
+    \item Im Dialogfeld Computergruppe hinzufügen den Namen der neuen Gruppe in das Feld Name eintragen, und Hinzufügen klicken.
+    \item Klicken auf Computer, und anschließende Auswahl der Computer.
+    \item Klicken auf die im vorhergehenden Schritt ausgewählten Computernamen, und auf Mitgliedschaft ändern.
+    \item Im Dialogfeld Gruppenmitgliedschaft für Computer festlegen die erstellte Testgruppe auswählen und bestätigen.
+\end{enumerate}
+
+\newpage
+\section{Konfigurieren von Clientupdates}
+Beim WSUS-Setup wird IIS automatisch so konfiguriert, dass die aktuelle Version von ``Automatische Updates'' an jeden Clientcomputer verteilt wird, der eine Verbindung mit dem WSUS-Server herstellt.
+Die für ``Automatische Updates'' am besten geeignete Konfiguration hängt von der Netzwerkumgebung ab.
+\\\vspace{0.5 em}
+Wenn ein Active Directory-Verzeichnisdienst verwendet wird, kann ein vorhandenes Gruppenrichtlinienobjekt (GPO) verwendet werden oder ein neues erstellt werden.
+\\\vspace{0.5 em}
+In einer Umgebung ohne Active Directory sollte die Konfiguration über den Editor für lokale Gruppenrichtlinien vorgenommen werden und anschließend auf den Client und den WSUS-Server verweisen.
+Über ``Konfigurieren von Automatische Updates'' in ``Gruppenrichtlinie'' können die Updates dann eingestellt werden.
+
+\section{Konfigurieren von Computergruppen}
+Nach der Konfiguration der Clientupdates können auf die Computergruppen konfiguriert werden.
+\\\vspace{0.5 em}
+Mit Active Directory können mehrere Computer gleichzeitig konfiguriert werden, indem einfach die GPO mit WSUS-Einstellungen versehen wird.
+Es wird empfohlen, ein neues GPO zu erstellen, das nur WSUS-Einstellungen enthält und dieses mit einem geeigneten Active Directory-Container zu verbinden.
+
+\paragraph{Aktivieren von WSUS über ein Domänen-GPO}
+\begin{enumerate}
+    \item Navigieren in der Gruppenrichtlinien-Verwaltungskonsole zum GPO, in dem WSUS konfiguriert werden soll und Bearbeiten klicken.
+    \item Erweitern von Computerkonfiguration, Richtlinien, Administrative Vorlagen und Windows-Komponenten, und klicken auf Windows Update.
+    \item Automatische Updates konfigurieren wählen und die Richtlinie Automatische Updates konfigurieren wird geöffnet.
+    \item Klicken auf Aktiviert und wählen einer der folgenden Optionen:\\
+    ``Vor Herunterladen und Installation benachrichtigen'', ``Autom. Herunterladen, aber vor Installation benachrichtigen'', ``Autom. Herunterladen und laut Zeitplan installieren'', ``Lokalen Administrator ermöglichen, Einstellung auszuwählen''.
+    \item Clientseitige Zielzuordnung aktivieren und dann Aktiviert auf aus setzten.
+    \item Namen der WSUS-Computergruppe angeben, welcher der Computer hinzufügt werden soll.
+\end{enumerate}
+Nach dem Einrichten eines Clients dauert es einige Minuten, bis der Computer auf der Seite Computer in der WSUS-Verwaltungskonsole angezeigt wird.
+
+\section{Abschluss der IIS-Konfiguration}
+Standardmäßig ist der anonyme Lesezugriff für die Standardwebsite und alle neuen IIS-Websites aktiviert.
+Andernfalls müssen die Schritte für die entsprechende Version von IIS ausgeführt werden, um anonymen Lesezugriff zu aktivieren.
+
+\section{Konfigurieren eines Signaturzertifikats}
+WSUS bietet die Möglichkeit, benutzerdefinierte Updatepakete für Produkte von Microsoft und andere Produkte zu veröffentlichen.
+WSUS kann diese benutzerdefinierten Updatepakete automatisch mit einem Zertifikat signieren. Dazu muss ein Paketsignaturzertifikat auf dem WSUS-Server installiert werden.
+\\\vspace{0.5 em}
+Der private Schlüssel muss auf dem WSUS-Server installiert sein, und der öffentliche Schlüssel muss explizit im Speicher für vertrauenswürdige Zertifikate auf allen Client-PCs und Servern installiert werden, die benutzerdefinierte signierte Updates erhalten sollen.
+\\\vspace{0.5 em}
+Wenn das selbstsignierte Zertifikat abläuft oder sich das Ablaufdatum nähert, protokolliert WSUS entsprechende Ereignisse im Ereignisprotokoll.
+
+\end{document}

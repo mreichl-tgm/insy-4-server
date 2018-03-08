@@ -1,0 +1,30 @@
+\documentclass{preset/school}
+
+\subject{INSY}
+\title{Windows Server}
+\subtitle{MSI Verteilung am Beispiel Java}
+
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+
+\section{Einführung}
+Die Windows-Pakete für die Java Runtime werden als .exe und nicht als .msi geliefert, wodurch sie prinzipiell nicht für die automatische Verteilung per Gruppenrichtlinie geeignet sind.
+Im Fall von Java gibt es jedoch eine Option namens \texttt{msiexec.exe} an.
+
+\section{Wahl der Downloadquelle}
+Die Standard Installation von Java enthält zusätzliche Software-Komponenten, welche aber nur zu Werbezwecken dienen.
+Der Benutzer kann diese zwar interaktiv abwählen, aber bei der Bereitstellung des Paketes würden diese mit installiert werden.
+Auf der Übersichtsseite für die Java-Downloads ist daher der Link \texttt{Java SE for Business} zu wählen.
+Auch wenn 32-Bit-System mittlerweile selten sind sollten diese nicht benachteiligt werden, also wird der Link zu diesem auch angegeben.
+
+\section{Setup}
+Um das verpackte MSI-Paket der Installation zu erhalten, genügt es, die Software-Installation einmal interaktiv zu starten.
+Die MSI-Datei wird dann unter\\ \texttt{\%UserProfile\%\textbackslash{}AppData\textbackslash{}LocalLow\textbackslash{}Sun\textbackslash{}Java} in einem Unterverzeichnis mit der jeweiligen Versionsbezeichnung gespeichert.
+Diese kann dann zusammen mit der Datendatei \texttt{Data1.cab} in die Bereitstellungsfreigabe kopiert werden. Danach erstellt man einfach eine Gruppenrichtlinie (siehe WSUS Dokumentation) zur Verteilung der Software.
+\\
+Die alte Java Runtime wird bei der Installation entfernt, dieser Schritt muss also nicht manuell vorgenommen werden.
+
+\end{document}

@@ -1,0 +1,52 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{microtype}
+\usepackage{cmbright}
+\usepackage[T1]{fontenc}
+
+%opening
+\title{WSUS - Basis}
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+
+\section{Vorbereitung}
+\subsection{Szenario}
+\subsubsection{Einfache WSUS-Bereitstellung}
+Die einfachste WSUS-Bereitstellung besteht aus einem Server innerhalb der Unternehmensfirewall, der Updates für Clientcomputer in einem privaten Intranet verarbeitet. 
+Der WSUS-Server stellt eine Verbindung mit Microsoft Update her, um Updates herunterzuladen.
+\subsubsection{Mehrere WSUS Server}
+Administratoren können mehrere Server mit WSUS bereitstellen, die alle Inhalte innerhalb des Intranets der Organisation synchronisieren.
+\subsubsection{Nicht verbundener WSUS Server}
+Wenn der Zugriff auf das Internet aufgrund von Unternehmensrichtlinien oder aus anderen Gründen eingeschränkt ist, können Administratoren einen internen Server für WSUS einrichten.
+\subsubsection{Serverhierarchien}
+Da es möglich ist, einen WSUS-Server nicht mit Microsoft Update, sondern mit einem anderen WSUS-Server zu synchronisieren, benötigt man nur einen mit Microsoft Update verbundenen WSUS-Server.
+
+\subsection{Datenspeicherung}
+Windows Server Update Services (WSUS) verwendet zwei Arten von Speichersystemen: eine Datenbank zum Speichern der WSUS-Konfiguration und Updatemetadaten und ein optionales lokales Dateisystem zum Speichern von Updatedateien.
+\subsubsection{WSUS Datenbank}
+WSUS erfordert eine Datenbank für jeden WSUS-Server. WSUS unterstützt – mit einigen Einschränkungen – die Verwendung einer Datenbank, die sich auf einem anderen Computer als dem WSUS-Server befindet.
+Diese Datenbank kann entweder eine interne Windows Datenbank, oder ein SQL Server sein.
+\subsubsection{WSUS Updatespeicher}
+Beim Synchronisieren von Updates auf den WSUS-Server werden die Metadaten- und Updatedateien an zwei separaten Speicherorten gespeichert. Metadaten werden in der WSUS-Datenbank gespeichert. 
+Updatedateien können auf dem WSUS-Server oder auf Microsoft Update-Servern gespeichert werden, je nachdem, wie die Optionen für die Synchronisierung konfiguriert wurde.
+
+\section{Installation}
+\begin{itemize}
+ \item Navigation auf ``Verwalten'' und dann auf ``Rollen und Features hinzufügen''.
+ \item Installationstyp ``Rollenbasierte oder featurebasierte Installation'' ausw\"ahlen.
+ \item Auswahl des Zielservers, sowie des Ortes auf dem die WSUS-Serverrolle installiert werden soll.
+ \item Auswahl der Rolle Windows Server Update Services (WSUS).
+ \item Für Windows Server Update Services erforderliche Features hinzugefügen.
+ \item Standardeinstellungen beibehalten und durchklicken.
+  \subitem Standardkonfiguration der Webserverrolle erforderlich.
+  \subitem Datenbanktyp auswählen und eventuell Optionen aktivieren.
+ \item Gültigen Speicherort zum Speichern der Updates angeben. Empfohlen ist daf\"ur ein eigens angelegter Ordner.
+ \item Informationen zur Webserverrolle (IIS) \"uberpr\"ufun und mit Standardeinstellungen durchklicken.
+ \item Überprüfen der Installationsauswahl und Bestätigung der ausgewählten Optionen.
+ \item Wenn erforderlich das System neustarten.
+\end{itemize}
+\end{document}

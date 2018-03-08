@@ -1,0 +1,71 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{microtype}
+\usepackage{cmbright}
+\usepackage[T1]{fontenc}
+
+%opening
+\title{Windows Bereitstellungsdienste II}
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+
+\section{Hinzuf\"ugen von Start- und Installationsabbildern}
+\subsection{Startabbilder}
+Bei einem Startabbild handelt es sich um Windows PE-Abbilder, mit dem einen Clientcomputer gestartet, eine Installation des Betriebssystems ausführen. 
+In den meisten Szenarien sollte die Datei "Boot.wim" von den Installationsmedien (im Ordner "Sources") verwendet werden. 
+Die Datei "Boot.wim" enthält Windows PE und den Windows-Bereitstellungsdiensteclient.
+
+\subsection{Installationsabbilder}
+Bei einem Installationsabbild handelt es sich um das Betriebssystem-Images, die auf dem Clientcomputer bereitgestellt. 
+Diese k\"onnen auch durch die Install.wim-Datei von den Installationsmedien (im Ordner "Sources"), oder durch ein eigenes Installationsabbild erstellt werden (anhand der Schritte im ``Erstellen von benutzerdefinierten Installationsabbildern'').
+
+\subsection{Vorraussetzungen zur Installation}
+\begin{itemize}
+ \item Der Clientcomputer muss einen PXE-Start ausführen.
+ \item Der Clientcomputer muss mindestens 512 MB RAM verfügen, die Mindestmenge an Arbeitsspeicher für die Verwendung von Windows PE.
+ \item Der Client muss das System für das Betriebssystem des Installationsabbilds erfüllen.
+ \item Ein lokales Benutzerkonto muss ein, die auf der Windows-Bereitstellungsdienste-Server erstellt werden.
+\end{itemize}
+
+\subsection{Installation von Installationsabbildern (Am Empf\"anger)}
+\begin{itemize}
+ \item Konfigurieren des PXE-Starts und Startreihenfolge festlegen, sodass der Computer zuerst vom Netzwerk aus gestartet wird.
+ \item Neustarten und bei Aufforderung F12 dr\"ucken um einen Netzwerkstart auszulösen.
+ \item Auswahl des gewünschten Startabbilds aus dem Startmenü.
+ \item Beim Verbinden des WDS-ServersAuthentifizierungsdialogfelds, das lokale Benutzerkonto und ein Kennwort eingeben.
+ \item \"Ubliches Vorgehen bei der Installation des Betriebssystems.
+\end{itemize}
+
+\subsection{Erstellen von benutzerdefinierten Installationsabbildern}
+\subsubsection{Aufzeichnungsabbild}
+Zum Erstellen eines Installationsabbilds muss zunächst ein Aufzeichnungsabbild erstellt werden. 
+Bei einem Aufzeichnungsabbild handelt es sich um Startabbilder, mit dem einen Clientcomputer gestartet, um das Betriebssystem in einer WIM-Datei aufzuzeichnen.
+
+\begin{itemize}
+ \item Erweitern der Windows-Bereitstellungsdienste den Knoten Startabbilder.
+ \item Klicken auf das Bild, um es als Aufzeichnungsabbild zu verwenden.
+ \item Klicken auf Aufzeichnungsabbild erstellen.
+ \item Angabe von Image-Beschreibung, Speicherort und Dateinamen ein, die eine lokale Kopie der Datei gespeichert werden soll.
+ \item Ein Bild hinzufügen.
+ \item Speicherort der Windows-Abbilddatei, die die Bilder enthält angeben.
+ \item Abbildname und Abbildbeschreibung angeben.
+ \item Bis zum Ende durchklicken.
+\end{itemize}
+
+\subsubsection{Installationsabbild}
+\begin{itemize}
+ \item Erstellen eines Referenzcomputers
+ \item Wechseln in eine Befehlszeile auf dem Referenzcomputer zum /Windows/System32/Sysprep oder den Ordner mit Sysprep.exe und Setupcl.exe.
+ \item Beim Neustart des Computers durch Drücken der Taste F12 einen Netzwerkstart ausführen.
+ \item Im Startmenü das zuvor erstellte Boot-Aufzeichnungsabbild ausw\"ahlen.
+ \item Klicken auf Durchsuchen neben dem Namen und Speicherort und navigieren zu einem lokalen Ordner zur Speicherung.
+ \item Angabe eines Namens für das Bild in der WIM-Erweiterung und speichern.
+ \item Image hochladen ausw\"ahlen und verbinden.
+ \item Wenn verlangt Benutzernamen und Kennwort für ein Konto mit Berechtigungen zum Verbinden angeben.
+ \item Namen der Abbildgruppe angeben und fertigstellen.
+\end{itemize}
+\end{document}

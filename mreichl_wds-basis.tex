@@ -1,0 +1,72 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{microtype}
+\usepackage{cmbright}
+\usepackage[T1]{fontenc}
+
+%opening
+\title{Windows Bereitstellungsdienste}
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+
+\section{Einf\"uhrung}
+Windows-Bereitstellungsdienste können Windows-Betriebssysteme bereitstellen. 
+Diese Dienste können verwendet werden, um neue Computer mithilfe einer netzwerkbasierten Installation einzurichten.
+
+\section{Installation}
+\subsection{Vorbereitung}
+Die Windows Bereitstellungsdienste ben\"otigen zumindest die Funktionen ``NTFS-Volume'', ``DNS'', ``DHCP'', ``Anmeldeinformationen''.
+
+\subsection{Vorgehen}
+\begin{itemize}
+ \item Klick im Server-Manager auf verwalten.
+ \item Klick auf Rollen und Features hinzufügen.
+ \item Rollenbasierte oder featurebasierte Installation undServer zum Bereitstellen von WDS w\"ahlen.
+ \item Auf der Serverrollen Seite Windows-Bereitstellungsdienste ausw\"ahlen.
+ \item Klicken auf weiter.
+\end{itemize}
+
+Zus\"atzlich k\"onnen zwei Rollendienste installiert werden. ``Bereitstellungsserver'' und ``Transportserver'' installieren.
+
+\subsubsection{Transport Server}
+Diese Option bietet eine Teilmenge der Funktionen der Windows-Bereitstellungsdienste. Sie enthält nur die zentralen Netzwerkkomponenten.
+
+Transport-Server können multicast-Namespaces zu erstellen, die Übertragung von Daten (einschließlich Betriebssystemabbildern) von einem eigenständigen Server.
+
+\subsubsection{Deployment Server}
+Diese Option bietet die volle Funktionalität von Windows Deployment Services, die zum Konfigurieren und Remoteinstallation von Windows-Betriebssystemen verwendet werden können. 
+
+\section{Konfiguration}
+Nach der Installation der Windows-Bereitstellungsdienst-Rolle muss der Server konfiguriert werden. 
+
+Wenn Windows-Bereitstellungsdienste in Active Directory integriert ist, muss der Server Mitglied einer Active Directory-Domänendienste (AD DS)-Domäne oder ein Domänencontroller für eine AD DS-Domäne sein. 
+
+Wenn Windows-Bereitstellungsdienste im eigenständigen Modus installiert ist, können sie ohne eine Abhängigkeit von Active Directory konfiguriert werden.
+
+\subsection{Vorraussetzungen}
+Es ist ein aktiver DHCP-Server auf die in Windows-Bereitstellungsdienste verwendet Pre-Execution Environment (PXE), die DHCP für die IP-Adressierung benötigt.
+
+Es ist ein aktiver DNS-Server im Netzwerk. Der Server hat eine NTFS-Dateisystempartition auf dem Bilder gespeichert werden.
+
+\subsection{Vorgehen}
+Es gibt zwei Konfigurationsoptionen für die Windows-Bereitstellungsdienste. 
+Es kann konfiguriert werden, um Active Directory integriert oder als eigenständiger Server konfiguriert werden.
+
+Der Beispielserver verwendet den eigenst\"andigen Modus.
+\begin{itemize}
+ \item Klicken auf Tools und auf Windows-Bereitstellungsdienste.
+ \item Auswahl des gew\"unschten Servers.
+ \item Auswahl eigenst\"andiger Server.
+ \item Standardpfad ausw\"ahlen, oder eigenen Pfad hinzufügen.
+\end{itemize}
+
+Wenn die Konfiguration löschen abgeschlossen ist k\"onnen nun die Images hinzufügt werden.
+Wenn die Einstellungen des Servers geändert werden sollen, kann \"uber die Option ``Eigenschaften'' zugegriffen werden.
+Nun muss zumindest ein Startabbild (die startbare Umgebung, mit dem ursprünglich gestartet, der Computer und ein Installationsabbild (die eigentlichen Abbilder, die Sie bereitstellen werden) angegeben werden.
+Diese Funktion findet sich unter ``hinzufügen von Bildern''.
+
+\end{document}
